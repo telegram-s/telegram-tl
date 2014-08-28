@@ -7,7 +7,7 @@ import java.io.OutputStream;
 /**
  * Helper class for writing and reading data for tl (de-)serialization.
  *
- * @author Korshakov Stepan <me@ex3ndr.com>
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public class StreamingUtils {
 
@@ -16,7 +16,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeByte(int v, OutputStream stream) throws IOException {
         stream.write(v);
@@ -27,7 +27,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeByte(byte v, OutputStream stream) throws IOException {
         stream.write(v);
@@ -38,7 +38,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeInt(int v, OutputStream stream) throws IOException {
         writeByte((byte) (v & 0xFF), stream);
@@ -52,7 +52,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeLong(long v, OutputStream stream) throws IOException {
         writeByte((byte) (v & 0xFF), stream);
@@ -71,7 +71,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeDouble(double v, OutputStream stream) throws IOException {
         writeLong(Double.doubleToLongBits(v), stream);
@@ -82,7 +82,7 @@ public class StreamingUtils {
      *
      * @param data   data
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeByteArray(byte[] data, OutputStream stream) throws IOException {
         stream.write(data);
@@ -92,8 +92,10 @@ public class StreamingUtils {
      * Writing byte array to stream
      *
      * @param data   data
+     * @param offset offset in array
+     * @param len    byte count
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeByteArray(byte[] data, int offset, int len, OutputStream stream) throws IOException {
         stream.write(data, offset, len);
@@ -104,7 +106,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLBool(boolean v, OutputStream stream) throws IOException {
         if (v) {
@@ -119,7 +121,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLString(String v, OutputStream stream) throws IOException {
         writeTLBytes(v.getBytes(), stream);
@@ -130,7 +132,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLBytes(byte[] v, OutputStream stream) throws IOException {
         int startOffset = 1;
@@ -158,7 +160,7 @@ public class StreamingUtils {
      *
      * @param v      value
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLBytes(TLBytes v, OutputStream stream) throws IOException {
         int startOffset = 1;
@@ -186,7 +188,7 @@ public class StreamingUtils {
      *
      * @param v      tl-object
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLObject(TLObject v, OutputStream stream) throws IOException {
         v.serialize(stream);
@@ -197,7 +199,7 @@ public class StreamingUtils {
      *
      * @param v      tl-method
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLMethod(TLMethod v, OutputStream stream) throws IOException {
         writeTLObject(v, stream);
@@ -208,7 +210,7 @@ public class StreamingUtils {
      *
      * @param v      tl-vector
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException IO Exception
      */
     public static void writeTLVector(TLVector v, OutputStream stream) throws IOException {
         writeTLObject(v, stream);
@@ -219,7 +221,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return value
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static int readInt(InputStream stream) throws IOException {
         int a = stream.read();
@@ -247,7 +249,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return value
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static long readUInt(InputStream stream) throws IOException {
         long a = stream.read();
@@ -275,7 +277,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return value
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static long readLong(InputStream stream) throws IOException {
         long a = readUInt(stream);
@@ -289,7 +291,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return value
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static double readDouble(InputStream stream) throws IOException {
         return Double.longBitsToDouble(readLong(stream));
@@ -300,7 +302,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return value
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static String readTLString(InputStream stream) throws IOException {
         return new String(readTLBytes(stream));
@@ -312,7 +314,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-context
      * @return tl-object
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLObject readTLObject(InputStream stream, TLContext context) throws IOException {
         return context.deserializeMessage(stream);
@@ -324,7 +326,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-method
      * @return tl-method
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLMethod readTLMethod(InputStream stream, TLContext context) throws IOException {
         return (TLMethod) context.deserializeMessage(stream);
@@ -335,8 +337,8 @@ public class StreamingUtils {
      *
      * @param count  bytes count
      * @param stream source stream
-     * @return readed bytes
-     * @throws IOException reading exception
+     * @return read bytes
+     * @throws IOException IO Exception
      */
     public static byte[] readBytes(int count, InputStream stream) throws IOException {
         byte[] res = new byte[count];
@@ -359,8 +361,7 @@ public class StreamingUtils {
      *
      * @param count  bytes count
      * @param stream source stream
-     * @return readed bytes
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static void skipBytes(int count, InputStream stream) throws IOException {
         stream.skip(count);
@@ -369,10 +370,11 @@ public class StreamingUtils {
     /**
      * Reading bytes from stream
      *
+     * @param buffer source data
+     * @param offset offset in array
      * @param count  bytes count
      * @param stream source stream
-     * @return readed bytes
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static void readBytes(byte[] buffer, int offset, int count, InputStream stream) throws IOException {
         int woffset = 0;
@@ -392,8 +394,8 @@ public class StreamingUtils {
      * Reading tl-bytes from stream
      *
      * @param stream source stream
-     * @return readed bytes
-     * @throws IOException reading exception
+     * @return read bytes
+     * @throws IOException IO Exception
      */
     public static byte[] readTLBytes(InputStream stream) throws IOException {
         int count = stream.read();
@@ -418,8 +420,8 @@ public class StreamingUtils {
      *
      * @param stream  source stream
      * @param context tl-context
-     * @return readed bytes
-     * @throws IOException reading exception
+     * @return read bytes
+     * @throws IOException rIO Exception
      */
     public static TLBytes readTLBytes(InputStream stream, TLContext context) throws IOException {
         int count = stream.read();
@@ -445,7 +447,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-context
      * @return tl-vector
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLVector readTLVector(InputStream stream, TLContext context) throws IOException {
         return context.deserializeVector(stream);
@@ -457,7 +459,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-context
      * @return tl-vector of integers
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLIntVector readTLIntVector(InputStream stream, TLContext context) throws IOException {
         return context.deserializeIntVector(stream);
@@ -469,7 +471,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-context
      * @return tl-vector of longs
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLLongVector readTLLongVector(InputStream stream, TLContext context) throws IOException {
         return context.deserializeLongVector(stream);
@@ -481,7 +483,7 @@ public class StreamingUtils {
      * @param stream  source stream
      * @param context tl-context
      * @return tl-vector of strings
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static TLStringVector readTLStringVector(InputStream stream, TLContext context) throws IOException {
         return context.deserializeStringVector(stream);
@@ -492,7 +494,7 @@ public class StreamingUtils {
      *
      * @param stream source stream
      * @return bool
-     * @throws IOException reading exception
+     * @throws IOException IO Exception
      */
     public static boolean readTLBool(InputStream stream) throws IOException {
         int v = readInt(stream);

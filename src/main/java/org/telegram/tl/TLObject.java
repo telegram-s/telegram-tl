@@ -5,14 +5,13 @@ import java.io.*;
 import static org.telegram.tl.StreamingUtils.*;
 
 /**
- * Basic class for all tl-objects. Contains methods for serializing and deserializing object.
+ * <p>Basic class for all tl-objects. Contains methods for serializing and deserializing object.
  * Each tl-object has class id for using in object header for identifying object class for deserialization.
- * This number might be unique and often equals to crc32 of tl-record of tl-constructor.
- * <p/>
+ * This number might be unique and often equals to crc32 of tl-record of tl-constructor.</p>
  * It is recommended to declare public static final CLASS_ID with tl class id and
  * return this in getClassId and passing it to TLContext.registerClass method during class registration
  *
- * @author Korshakov Stepan <me@ex3ndr.com>
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public abstract class TLObject implements Serializable {
 
@@ -27,7 +26,7 @@ public abstract class TLObject implements Serializable {
      * Serializing object to byte array
      *
      * @return serialized object with header
-     * @throws IOException
+     * @throws IOException writing exception
      */
     public byte[] serialize() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -39,7 +38,7 @@ public abstract class TLObject implements Serializable {
      * Serializing object to stream
      *
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException writing exception
      */
     public void serialize(OutputStream stream) throws IOException {
         writeInt(getClassId(), stream);
@@ -51,7 +50,7 @@ public abstract class TLObject implements Serializable {
      *
      * @param stream  source stream
      * @param context tl context
-     * @throws IOException
+     * @throws IOException reading exception
      */
     public void deserialize(InputStream stream, TLContext context) throws IOException {
         int classId = readInt(stream);
@@ -66,7 +65,7 @@ public abstract class TLObject implements Serializable {
      * Serializing object body to stream
      *
      * @param stream destination stream
-     * @throws IOException
+     * @throws IOException writing exception
      */
     public void serializeBody(OutputStream stream) throws IOException {
 
@@ -77,7 +76,7 @@ public abstract class TLObject implements Serializable {
      *
      * @param stream  source stream
      * @param context tl context
-     * @throws IOException
+     * @throws IOException reading exception
      */
     public void deserializeBody(InputStream stream, TLContext context) throws IOException {
 

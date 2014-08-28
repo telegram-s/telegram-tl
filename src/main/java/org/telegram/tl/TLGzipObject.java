@@ -10,30 +10,40 @@ import static org.telegram.tl.StreamingUtils.writeTLBytes;
 /**
  * Basic class of gzipped object
  *
- * @author Korshakov Stepan <me@ex3ndr.com>
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public class TLGzipObject extends TLObject {
     public static final int CLASS_ID = 0x3072CFA1;
 
-    @Override
-    public int getClassId() {
-        return CLASS_ID;
+    private byte[] packedData;
+
+    public TLGzipObject() {
+
     }
 
     public TLGzipObject(byte[] packedData) {
         this.packedData = packedData;
     }
 
-    public TLGzipObject() {
-
+    @Override
+    public int getClassId() {
+        return CLASS_ID;
     }
 
-    private byte[] packedData;
-
+    /**
+     * Getting gzipped content
+     *
+     * @return GZipped content
+     */
     public byte[] getPackedData() {
         return packedData;
     }
 
+    /**
+     * Setting packed content
+     *
+     * @param packedData gzipped content
+     */
     public void setPackedData(byte[] packedData) {
         this.packedData = packedData;
     }

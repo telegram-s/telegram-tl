@@ -1,11 +1,79 @@
-project.group = "org.telegram"
-
-def basicVersion = '1.0'
-if (project.hasProperty('buildIndex')) {
-     project.version = basicVersion + '.' + project.buildIndex
-} else {
-     project.version = basicVersion + '-SNAPSHOT'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+repositories {
+    mavenCentral()
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = 'org.telegram-s'
+version = '1.1.0'
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+
+    archives javadocJar
+    archives sourcesJar
+}
+
+if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
+
+    signing {
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Telegram TL'
+                    packaging 'jar'
+                    description 'Telegram TL library for TL serialization'
+                    url 'https://github.com/telegram-s/telegram-tl'
+
+                    scm {
+                        url 'scm:git@github.com:telegram-s/telegram-tl.git'
+                        connection 'scm:git@github.com:telegram-s/telegram-tl.git'
+                        developerConnection 'scm:git@github.com:telegram-s/telegram-tl.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The MIT License (MIT)'
+                            url 'http://opensource.org/licenses/MIT'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'ex3ndr'
+                            name 'Stepan Korshakov'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -15,7 +15,7 @@ import java.util.zip.GZIPInputStream;
  * but it uses reflection so it might be slow in some cases. It recommended to manually pass CLASS_ID
  * to registerClass method.
  *
- * @author Korshakov Stepan <me@ex3ndr.com>
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public abstract class TLContext {
     private final HashMap<Integer, Class> registeredClasses = new HashMap<Integer, Class>();
@@ -25,18 +25,39 @@ public abstract class TLContext {
         init();
     }
 
+    /**
+     * Registering of all known classes might be here
+     */
     protected void init() {
 
     }
 
+    /**
+     * Is object supported by this context
+     *
+     * @param object source object
+     * @return is object supported
+     */
     public boolean isSupportedObject(TLObject object) {
         return isSupportedObject(object.getClassId());
     }
 
+    /**
+     * Is class supported by this context
+     *
+     * @param classId class id
+     * @return is class supported
+     */
     public boolean isSupportedObject(int classId) {
         return registeredClasses.containsKey(classId);
     }
 
+    /**
+     * Registering class for serialization
+     *
+     * @param tClass source class
+     * @param <T>    TLObject class
+     */
     public <T extends TLObject> void registerClass(Class<T> tClass) {
         try {
             int classId = tClass.getField("CLASS_ID").getInt(null);
@@ -48,10 +69,24 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Registering class for serialization. It work faster than {@link org.telegram.tl.TLContext#registerClass(Class)}
+     * because it does not use reflection for class id.
+     *
+     * @param clazzId class id
+     * @param tClass  source class
+     * @param <T>     TLObject class
+     */
     public <T extends TLObject> void registerClass(int clazzId, Class<T> tClass) {
         registeredClasses.put(clazzId, tClass);
     }
 
+    /**
+     * Registering compatibility class
+     *
+     * @param tClass compat class
+     * @param <T>    TLObject class
+     */
     public <T extends TLObject> void registerCompatClass(Class<T> tClass) {
         try {
             int classId = tClass.getField("CLASS_ID").getInt(null);
@@ -63,18 +98,46 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Registering compatibility class
+     *
+     * @param clazzId compat class id
+     * @param tClass  compat class
+     * @param <T>     TLObject class
+     */
     public <T extends TLObject> void registerCompatClass(int clazzId, Class<T> tClass) {
         registeredCompatClasses.put(clazzId, tClass);
     }
 
+    /**
+     * Override for providing compatibility between old classes and current scheme
+     *
+     * @param src compat object
+     * @return new object
+     */
     protected TLObject convertCompatClass(TLObject src) {
         return src;
     }
 
+    /**
+     * Deserializing message from bytes
+     *
+     * @param data message bytes
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLObject deserializeMessage(byte[] data) throws IOException {
         return deserializeMessage(new ByteArrayInputStream(data));
     }
 
+    /**
+     * Deserializing message from stream
+     *
+     * @param clazzId class id
+     * @param stream  source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLObject deserializeMessage(int clazzId, InputStream stream) throws IOException {
         if (clazzId == TLGzipObject.CLASS_ID) {
             TLGzipObject obj = new TLGzipObject();
@@ -123,11 +186,25 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Deserializing message from stream
+     *
+     * @param stream source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLObject deserializeMessage(InputStream stream) throws IOException {
         int clazzId = StreamingUtils.readInt(stream);
         return deserializeMessage(clazzId, stream);
     }
 
+    /**
+     * Deserializing object vector
+     *
+     * @param stream source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLVector deserializeVector(InputStream stream) throws IOException {
         int clazzId = StreamingUtils.readInt(stream);
         if (clazzId == TLVector.CLASS_ID) {
@@ -144,6 +221,13 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Deserializing int vector
+     *
+     * @param stream source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLIntVector deserializeIntVector(InputStream stream) throws IOException {
         int clazzId = StreamingUtils.readInt(stream);
         if (clazzId == TLVector.CLASS_ID) {
@@ -160,6 +244,13 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Deserializing long vector
+     *
+     * @param stream source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLLongVector deserializeLongVector(InputStream stream) throws IOException {
         int clazzId = StreamingUtils.readInt(stream);
         if (clazzId == TLVector.CLASS_ID) {
@@ -176,6 +267,13 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Deserializing string vector
+     *
+     * @param stream source stream
+     * @return result
+     * @throws IOException reading exception
+     */
     public TLStringVector deserializeStringVector(InputStream stream) throws IOException {
         int clazzId = StreamingUtils.readInt(stream);
         if (clazzId == TLVector.CLASS_ID) {
@@ -192,10 +290,21 @@ public abstract class TLContext {
         }
     }
 
+    /**
+     * Allocating TLBytes object. Override for providing memory usage optimizations
+     *
+     * @param size required minimum size of data
+     * @return allocated TLBytes
+     */
     public TLBytes allocateBytes(int size) {
         return new TLBytes(new byte[size], 0, size);
     }
 
+    /**
+     * Releasing unused TLBytes for reuse in allocation
+     *
+     * @param unused unused TLBytes
+     */
     public void releaseBytes(TLBytes unused) {
 
     }

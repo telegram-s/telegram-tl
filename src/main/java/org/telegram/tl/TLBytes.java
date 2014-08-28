@@ -1,9 +1,9 @@
 package org.telegram.tl;
 
-import java.util.Arrays;
-
 /**
- * Created by ex3ndr on 10.02.14.
+ * TL Bytes
+ *
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public class TLBytes {
     private byte[] data;

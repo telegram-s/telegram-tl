@@ -13,7 +13,7 @@ import static org.telegram.tl.StreamingUtils.*;
  * vector of integer, strings or long.
  *
  * @param <T> type of elements in vector
- * @author Korshakov Stepan <me@ex3ndr.com>
+ * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public class TLVector<T> extends TLObject implements List<T> {
 
@@ -27,10 +27,20 @@ public class TLVector<T> extends TLObject implements List<T> {
         return CLASS_ID;
     }
 
+    /**
+     * Vector content class
+     *
+     * @return content class
+     */
     public Class getDestClass() {
         return destClass;
     }
 
+    /**
+     * Setting content class
+     *
+     * @param destClass content class
+     */
     public void setDestClass(Class destClass) {
         if (destClass == null) {
             throw new RuntimeException("DestClass could not be null");
