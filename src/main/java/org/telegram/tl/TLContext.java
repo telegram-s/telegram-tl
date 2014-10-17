@@ -1,5 +1,7 @@
 package org.telegram.tl;
 
+import org.telegram.tl.util.SparseArray;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,8 +20,8 @@ import java.util.zip.GZIPInputStream;
  * @author Stepan Ex3NDR Korshakov (me@ex3ndr.com)
  */
 public abstract class TLContext {
-    private final HashMap<Integer, Class> registeredClasses = new HashMap<Integer, Class>();
-    private final HashMap<Integer, Class> registeredCompatClasses = new HashMap<Integer, Class>();
+    private final SparseArray<Class> registeredClasses = new SparseArray<Class>();
+    private final SparseArray<Class> registeredCompatClasses = new SparseArray<Class>();
 
     public TLContext() {
         init();
@@ -49,7 +51,7 @@ public abstract class TLContext {
      * @return is class supported
      */
     public boolean isSupportedObject(int classId) {
-        return registeredClasses.containsKey(classId);
+        return registeredClasses.indexOfKey(classId) >= 0;
     }
 
     /**
@@ -155,7 +157,7 @@ public abstract class TLContext {
             return new TLBoolFalse();
         }
 
-        if (registeredCompatClasses.containsKey(clazzId)) {
+        if (registeredCompatClasses.indexOfKey(clazzId) >= 0) {
             try {
                 Class messageClass = registeredCompatClasses.get(clazzId);
                 TLObject message = (TLObject) messageClass.getConstructor().newInstance();
